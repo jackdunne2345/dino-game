@@ -1,0 +1,49 @@
+body {
+    width: 100%;
+    height: 100vh; 
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    background-color: purple;
+    margin: 0;
+}
+
+#container {
+    position: relative;
+    width: 100%;
+    height: 200px; 
+}
+
+#player {
+    width: 100px;
+    height: 100px;
+    background-color: green;
+    position: absolute;
+    bottom: 5px; 
+    transition: bottom 0.5s;
+}
+
+#floor {
+    width: 100%;
+    height: 5px;
+    background-color: red;
+    position: absolute;
+    bottom: 0;
+}
+
+#coordinates {
+    color: white;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+@keyframes jump {
+    0% { bottom: 5px; }
+    50% { bottom: 205px; }
+    100% { bottom: 5px; }
+}
+
+.jump {
+    animation: jump 1s forwards; 
+}
