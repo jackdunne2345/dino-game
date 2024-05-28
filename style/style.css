@@ -20,22 +20,32 @@ body {
     height: 4%;
     background-color: green;
     position: absolute;
-    bottom: 5px; 
+    bottom: 2%; 
     transition: bottom 0.5s;
 }
 .obstacle {
-    width: 1%;
-    height: 10%;
     background-color: blue;
     position: absolute;
     bottom: 5px; 
-    right:-20px;
+    right:-15%;
     transition: bottom 0.5s;
+    
+    
+}
+
+.tall{
+    width: 1%;
+    height: 10%;
+}
+
+.wide{
+    width: 6%;
+    height: 3%;
 }
 
 #floor {
     width: 100%;
-    height: 5px;
+    height: 2%;
     background-color: red;
     position: absolute;
     bottom: 0;
@@ -55,9 +65,9 @@ body {
 }
 
 @keyframes jump {
-    0% { bottom: 5px; }
-    50% { bottom: 205px; }
-    100% { bottom: 5px; }
+    0% { bottom: 2%; }
+    50% { bottom: 15%; }
+    100% { bottom: 2%; }
 }
 
 .jump {
