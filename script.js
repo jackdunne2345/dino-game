@@ -1,4 +1,8 @@
 
+const getRandomNumber = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 // get the player and coordinated div DOM objects
 let player = document.getElementById('player')
 let coordinates = document.getElementById('coordinates')
@@ -41,11 +45,15 @@ const move_obstacles=()=>{
     //turn the HTMLCollectionOf<Element> to an array and loop through
     Array.from(obstacles).forEach(obstacle => {
         //check if there is a right property in its style and retrive it
-        //if not set it to zer0
-        let currentRight = parseInt(obstacle.style.right) || 0
+        console.log(parseInt(obstacle.style.right))
+        let currentRight = parseInt(obstacle.style.right)
+        //if is a nan set it to a random number
+        if (isNaN(currentRight)) {
+            currentRight = getRandomNumber(-200, -5);
+        }
         //check if the obstacle is off the screen, if so
         //set it back to starting position
-        if(currentRight>105) obstacle.style.right='-5%'
+        if(currentRight>105) obstacle.style.right=`${getRandomNumber(-200, -5)}%`
         //else increment by 1%
         else obstacle.style.right = (currentRight+1) + '%'
     });
@@ -54,28 +62,30 @@ const move_obstacles=()=>{
 
 const collision=()=>{
     //get the bounding quadrilateral of the player element
-    let playeRect = player.getBoundingClientRect();
+    let playerRect = player.getBoundingClientRect();
+    let isColliding=false
     // turn into an array and loop
     Array.from(obstacles).forEach(obstacle => {
         //get the bounding quadrilateral of the obstacle element
         let obstacleRect = obstacle.getBoundingClientRect();
         //some simple math to check the position of both and check if they overlap
-        let isColliding= !(
-            playeRect.top > obstacleRect.bottom || 
-            playeRect.bottom < obstacleRect.top || 
-            playeRect.left > obstacleRect.right || 
-            playeRect.right < obstacleRect.left
-        );
+        if (!(playerRect.top > obstacleRect.bottom || 
+            playerRect.bottom < obstacleRect.top || 
+            playerRect.left > obstacleRect.right || 
+            playerRect.right < obstacleRect.left)) isColliding = true;
+      
         //we can handle the collision detection here
         if(isColliding) collisionText.textContent='true'
         else collisionText.textContent='false'
     });
+    return isColliding
+ 
 }
 
 const game =()=>{
-    collision()
-    move_obstacles()
+    let collide = collision()
+    console.log(collide)
+    if(!collide) move_obstacles() 
+    else {}
 }
-
-
 const go = setInterval(game, 16)

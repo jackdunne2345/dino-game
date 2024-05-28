@@ -27,10 +27,7 @@ body {
     background-color: blue;
     position: absolute;
     bottom: 5px; 
-    right:-15%;
     transition: bottom 0.5s;
-    
-    
 }
 
 .tall{
@@ -71,5 +68,5 @@ body {
 }
 
 .jump {
-    animation: jump 1s forwards; 
+    animation: jump 0.4s forwards; 
 }
