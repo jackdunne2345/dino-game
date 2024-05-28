@@ -72,7 +72,7 @@ const collision=()=>{
         if (!(playerRect.top > obstacleRect.bottom || 
             playerRect.bottom < obstacleRect.top || 
             playerRect.left > obstacleRect.right || 
-            playerRect.right < obstacleRect.left)) isColliding = true;
+            playerRect.right < obstacleRect.left)) isColliding = true
       
         //we can handle the collision detection here
         if(isColliding) collisionText.textContent='true'
