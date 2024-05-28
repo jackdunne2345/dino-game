@@ -26,8 +26,9 @@ body {
 .obstacle {
     background-color: blue;
     position: absolute;
-    bottom: 5px; 
+    bottom: 2%; 
     transition: bottom 0.5s;
+    right: -50%;
 }
 
 .tall{
@@ -53,6 +54,12 @@ body {
     position: absolute;
     top: 10px;
     left: 10px;
+}
+#score {
+    color: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 #collisionText {
     color: white;
