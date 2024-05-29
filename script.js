@@ -116,7 +116,6 @@ const game = () => {
         let currentScore=Date.now()-startTime
         if (!move_Obstacles()&&startGame) {
             score.textContent=`Score: ${currentScore}`
-          
             requestAnimationFrame(animate)
         } else {
             startButton.style.display='block'
