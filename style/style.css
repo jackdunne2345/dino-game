@@ -23,6 +23,7 @@ body {
     bottom: 2%; 
     transition: bottom 0.5s;
 }
+
 .obstacle {
     background-color: blue;
     position: absolute;
@@ -31,12 +32,12 @@ body {
     right: -50%;
 }
 
-.tall{
+.tall {
     width: 1%;
     height: 10%;
 }
 
-.wide{
+.wide {
     width: 6%;
     height: 3%;
 }
@@ -55,18 +56,21 @@ body {
     top: 10px;
     left: 10px;
 }
+
 #score {
     color: white;
     position: absolute;
     top: 40px;
     right: 10px;
 }
+
 #top-score {
     color: white;
     position: absolute;
     top: 10px;
     right: 10px;
 }
+
 #collisionText {
     color: white;
     position: absolute;
