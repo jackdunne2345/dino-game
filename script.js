@@ -20,7 +20,11 @@ const game = () => {
     let startGame = false;
     let startTime = Date.now();
     let currentScore = 0;
+    let extraPoints = 0;
     let topScore = 0;
+    let isJumping = false;              // check if the player is currently jumping
+    let hasJumped = false;              // check if the player has jumped
+
     const startButton = document.getElementById('start');
    
     // check if the topScore exists in local storage if it doesnt create it, if it does set it to topScore
@@ -48,10 +52,17 @@ const game = () => {
         if (event.code === 'Space' && startGame) {
             // add the css class to the element 
             player.classList.add('jump')
+            isJumping = true
+
             //listents for the end of the animation
             player.addEventListener('animationend', () => {
                 // removes the class
                 player.classList.remove('jump')
+                isJumping = false                   // i have an idea to give the player extra score if they jump over an obstacle
+                if (hasJumped) {                    // there could be a better way to implement this
+                    extraPoints += 1000             // TODO: revamp the extra points system
+                    hasJumped = false               
+                }
                 // update_Player_Coordinates()
             }, { once: true })//only triggers once, then the listener is removed untill space is pressed again
         }
@@ -63,7 +74,6 @@ const game = () => {
         let isColliding = false
         //get the bounding quadrilateral of the obstacle element 
         let elementRect = element.getBoundingClientRect()
-        console.log(playerRect.right, elementRect.left)
         //some simple math to check the position of both and check if they overlap
         if (!(playerRect.top > elementRect.bottom || 
             playerRect.bottom < elementRect.top || 
@@ -96,9 +106,6 @@ const game = () => {
 
         //turn the HTMLCollectionOf<Element> to an array and loop through
         Array.from(obstacles).forEach((obstacle, idx) => {
-            //check if there is a right property in its style and retrive it
-            // console.log(`obstacle ${obstacle.className}`, parseFloat(obstacle.style.right));
-
             // modify the currentRight to use obstacle array positions
             obstacleRightPos[idx] = parseFloat(obstacle.style.right)     // i modify the position to use float in order for it to move more smoothly
             if (isNaN(obstacleRightPos[idx])) {
@@ -108,10 +115,16 @@ const game = () => {
             //check if the obstacle is off the screen, if so set it back to starting position
             if (obstacleRightPos[idx] > 105) obstacle.style.right = `${calculateObstaclePositions(idx)}%`
             else obstacle.style.right = `${obstacleRightPos[idx] + 0.5}%`    // i also set this to 0.5% to make it move slower
-            
+                
             //check if the object is colliding with the player
             if (collision(obstacle)) {
                 isColliding = true
+            } else if (isJumping && !hasJumped) {
+                let playerRect = player.getBoundingClientRect()
+                let obstacleRect = obstacle.getBoundingClientRect()
+
+                // only treat the player as having jumped if the player has jumped over the obstacle without colliding
+                if (playerRect.right > obstacleRect.left && !collision(obstacle)) hasJumped = true
             }
         });
 
@@ -119,6 +132,8 @@ const game = () => {
     }
 
     const resetGameState = () => {
+        currentScore = 0;
+        extraPoints = 0;
         Array.from(obstacles).forEach(obstacle => {
             obstacle.style.right = `${randNumber(-200, -5)-10}%`
         })
@@ -126,7 +141,11 @@ const game = () => {
 
     //main animation function 
     const animate = () => {
-        currentScore = Date.now() - startTime
+        currentScore = Date.now() - startTime + extraPoints;
+
+        // TODO: maybe implement extra points when the user jumps over an obstacle?
+        // i dont know how to implement this - Akip
+
         if (!moveObstacles() && startGame) {
             score.textContent = `Score: ${currentScore}`
             requestAnimationFrame(animate)
