@@ -24,9 +24,9 @@ const game = () => {
     let topScore = 0;
     let isJumping = false;              // check if the player is currently jumping
     let hasJumped = false;              // check if the player has jumped
-
+    const menu = document.getElementById('menu');
     const startButton = document.getElementById('start');
-   
+    const gameContainer=document.getElementById('game')
     // check if the topScore exists in local storage if it doesnt create it, if it does set it to topScore
     const storedTopScore = localStorage.getItem('topScore')
     if (storedTopScore === null) {
@@ -43,7 +43,9 @@ const game = () => {
     let topScoreElement = document.getElementById('top-score')
     let collisionText = document.getElementById('collisionText')
     let obstacles = document.getElementsByClassName('obstacle')
-
+    let jumpAudio = document.getElementById("jumpAudio");
+        
+      
     //set the text in the top score element to the top score
     topScoreElement.textContent = `Top score: ${topScore}`
     // an event listener to listen for the press of the space bar and add the class name of "jump"
@@ -51,13 +53,16 @@ const game = () => {
     document.addEventListener('keydown', function(event) {
         if (event.code === 'Space' && startGame) {
             // add the css class to the element 
+            player.classList.remove('walk')
             player.classList.add('jump')
             isJumping = true
+            jumpAudio.play();
 
             //listents for the end of the animation
             player.addEventListener('animationend', () => {
                 // removes the class
                 player.classList.remove('jump')
+                player.classList.add('walk')
                 isJumping = false                   // i have an idea to give the player extra score if they jump over an obstacle
                 if (hasJumped) {                    // there could be a better way to implement this
                     extraPoints += 1000             // TODO: revamp the extra points system
@@ -80,9 +85,7 @@ const game = () => {
             playerRect.left > elementRect.right || 
             playerRect.right < elementRect.left)) isColliding = true
             
-        //we can handle the collision detection here
-        if (isColliding) collisionText.textContent = 'true'
-        else collisionText.textContent = 'false'
+       
         return isColliding
     }
 
@@ -150,7 +153,8 @@ const game = () => {
             score.textContent = `Score: ${currentScore}`
             requestAnimationFrame(animate)
         } else {
-            startButton.style.display='block'
+            menu.style.display='flex'
+            gameContainer.style.visibility = 'hidden'
             if(topScore < currentScore){
                 topScore = currentScore
                 localStorage.setItem('topScore', currentScore)
@@ -166,7 +170,7 @@ const game = () => {
     startButton.addEventListener('click', () => {
         startGame = true
         startTime = Date.now()
-        startGame && (startButton.style.display = 'none') && animate()
+        startGame && (menu.style.display = 'none') && (gameContainer.style.visibility = 'visible')&&animate()
     })
 }
 
