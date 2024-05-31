@@ -27,6 +27,7 @@ const game = () => {
     const menu = document.getElementById('menu');
     const startButton = document.getElementById('start');
     const gameContainer=document.getElementById('game')
+    const hole=document.getElementById('hole')
     // check if the topScore exists in local storage if it doesnt create it, if it does set it to topScore
     const storedTopScore = localStorage.getItem('topScore')
     if (storedTopScore === null) {
@@ -37,13 +38,14 @@ const game = () => {
     }
 
     // get the player and coordinated div DOM objects
-    let player = document.getElementById('player')
-    let coordinates = document.getElementById('coordinates')
-    let score = document.getElementById('score')
-    let topScoreElement = document.getElementById('top-score')
-    let collisionText = document.getElementById('collisionText')
-    let obstacles = document.getElementsByClassName('obstacle')
-    let jumpAudio = document.getElementById("jumpAudio");
+    const player = document.getElementById('player')
+    const coordinates = document.getElementById('coordinates')
+    const score = document.getElementById('score')
+    const topScoreElement = document.getElementById('top-score')
+    const collisionText = document.getElementById('collisionText')
+    const obstacles = document.getElementsByClassName('obstacle')
+    const jumpAudio = document.getElementById("jumpAudio")
+    const deadAudio=document.getElementById("deadAudio")
         
       
     //set the text in the top score element to the top score
@@ -75,7 +77,7 @@ const game = () => {
 
     const collision = (element) => {
         //get the bounding quadrilateral of the player element
-        let playerRect = player.getBoundingClientRect()
+        const playerRect = player.getBoundingClientRect()
         let isColliding = false
         //get the bounding quadrilateral of the obstacle element 
         let elementRect = element.getBoundingClientRect()
@@ -91,8 +93,8 @@ const game = () => {
 
     // calculate each obstacle positions to prevent two obstacles from being too close to each other making the game impossible
     // needs more testing, but so far so good
-    let obstacleRightPos = Array(Array.from(obstacles).length).fill(0);
-    const calculateObstaclePositions = (obstacleIndex) => {
+    let obstacleRightPos = Array(Array.from(obstacles).length).fill(0)
+    const calculate_Obstacle_Position = (obstacleIndex) => {
         let position;
         let isUnique;
         do {
@@ -103,7 +105,7 @@ const game = () => {
     }
 
     //this function now returns a bool indicating a collision
-    const moveObstacles = () => {
+    const move_Obstacles = () => {
         let isColliding = false
         console.log(`distance between obstacles: ${Math.abs(obstacleRightPos[0] - obstacleRightPos[1])}`)
 
@@ -112,16 +114,17 @@ const game = () => {
             // modify the currentRight to use obstacle array positions
             obstacleRightPos[idx] = parseFloat(obstacle.style.right)     // i modify the position to use float in order for it to move more smoothly
             if (isNaN(obstacleRightPos[idx])) {
-                obstacleRightPos[idx] = calculateObstaclePositions(idx);
+                obstacleRightPos[idx] = calculate_Obstacle_Position(idx);
             }
 
             //check if the obstacle is off the screen, if so set it back to starting position
-            if (obstacleRightPos[idx] > 105) obstacle.style.right = `${calculateObstaclePositions(idx)}%`
+            if (obstacleRightPos[idx] > 105) obstacle.style.right = `${calculate_Obstacle_Position(idx)}%`
             else obstacle.style.right = `${obstacleRightPos[idx] + 0.5}%`    // i also set this to 0.5% to make it move slower
                 
             //check if the object is colliding with the player
             if (collision(obstacle)) {
                 isColliding = true
+               
             } else if (isJumping && !hasJumped) {
                 let playerRect = player.getBoundingClientRect()
                 let obstacleRect = obstacle.getBoundingClientRect()
@@ -134,7 +137,7 @@ const game = () => {
         return isColliding
     }
 
-    const resetGameState = () => {
+    const reset_Game_State = () => {
         currentScore = 0;
         extraPoints = 0;
         Array.from(obstacles).forEach(obstacle => {
@@ -149,21 +152,31 @@ const game = () => {
         // TODO: maybe implement extra points when the user jumps over an obstacle?
         // i dont know how to implement this - Akip
 
-        if (!moveObstacles() && startGame) {
+        if (!move_Obstacles() && startGame) {
             score.textContent = `Score: ${currentScore}`
             requestAnimationFrame(animate)
         } else {
-            menu.style.display='flex'
-            gameContainer.style.visibility = 'hidden'
-            if(topScore < currentScore){
-                topScore = currentScore
-                localStorage.setItem('topScore', currentScore)
-                topScoreElement.textContent=`Top score: ${topScore}`
-            }
-           
-            console.log('Collision detected. Game Over.')
-            resetGameState();
-            startGame = false
+            hole.classList.add('shrink')
+            player.classList.add('dead')
+            jumpAudio.pause()
+            deadAudio.play()
+            hole.addEventListener('animationend', () => {
+                hole.classList.remove('shrink')
+                player.classList.remove('dead')
+                player.classList.add('walk')
+                menu.style.display='flex'
+                gameContainer.style.visibility = 'hidden'
+                if(topScore < currentScore){
+                    topScore = currentScore
+                    localStorage.setItem('topScore', currentScore)
+                    topScoreElement.textContent=`Top score: ${topScore}`
+                }
+               
+                console.log('Collision detected. Game Over.')
+                reset_Game_State();
+                startGame = false
+            }, { once: true })
+          
         }
     };
 

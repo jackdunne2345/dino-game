@@ -21,10 +21,41 @@ body {
     overflow: hidden;
 }
 
-#game {
-    position: relative;
+#hole-container{ 
+    z-index: 12;
+    position:absolute;
+    overflow:hidden; 
     width: 100%;
-    height: 100%; 
+    height: 100%;
+    display: flex;
+    justify-content: center ;
+    align-items: center;
+}
+#hole{ 
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: 0 0 0 300vh aliceblue;
+}
+.shrink{
+    animation: shrink 0.5s forwards
+}
+
+@keyframes shrink {
+    0% {width: 100%; height: 100%;}
+    25% {width: 75%; height: 75%; }
+    50% {width: 50%; height: 50%; }
+    75% {width: 25%; height: 25%;}
+    80% {width: 0%; height: 0%;}
+    100% {width: 0%; height: 0%;}
+}
+
+
+#game {
+    width: 50%;
+    height: 50%;
+    border: 2px solid black;
+    position: relative;
     overflow: hidden;
     visibility: hidden;
 }
@@ -63,11 +94,7 @@ body {
     background-image: url('../images/bg/bg5.png');
 }
 
-#container{
-width: 50%;
-height: 50%;
-border: 2px solid black;
-}
+
 
 #menu{
     display: flex;
@@ -78,7 +105,7 @@ border: 2px solid black;
     width: 33%;
     height: 40%;
     position: absolute;
-    z-index: 10;
+    z-index: 13;
 }
 
 #player {
@@ -164,11 +191,21 @@ border: 2px solid black;
     animation: jump 0.8s forwards; 
 }
 
+.dead{
+    animation: dead 1s forwards
+}
+
 @keyframes jump {
     0% {background-image: url('../images/jump1.png'); bottom: 10%; }
     40% { background-image: url('../images/jump1.png');bottom: 50%; }
     60% {background-image: url('../images/jump2.png'); bottom: 50%; }
     100% {background-image: url('../images/jump2.png'); bottom: 10%; }
+}
+@keyframes dead {
+    0% {background-image: url('../images/jump2.png'); }
+    40% { background-image: url('../images/jump2.png');bottom: 5%; }
+    60% {background-image: url('../images/jump2.png'); bottom: -2%; }
+    100% {background-image: url('../images/jump2.png'); bottom: -40%; }
 }
 
 @keyframes walk {
