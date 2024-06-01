@@ -9,6 +9,16 @@
     font-family: 'Arcade', sans-serif;
     color: black;
 }
+button{
+    width: 80%;
+    height: 20%;
+}
+
+#game-title{
+    color: green;
+    text-shadow: 10px 10px 10px black;
+    text-
+}
 
 body {
     width: 100%;
@@ -99,11 +109,12 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: blue;
-    width: 33%;
+    border: 2px solid black;
+    width: 20%;
     height: 40%;
     position: absolute;
     z-index: 13;
+    padding: 2%;
 }
 
 #player {
@@ -119,7 +130,6 @@ body {
 }
 
 .obstacle {
-    background-color: blue;
     position: absolute;
     bottom: 10%; 
     transition: bottom 0.5s;
@@ -130,11 +140,16 @@ body {
 .tall {
     width: 1%;
     height: 9%;
+    background-image: url('../images/enviorment/tall.png');
+    background-size: cover;
+    background-position: center;
 }
 
 .wide {
     width: 5%;
     height: 3%;
+    background-image: url('../images/enviorment/wide.png');
+    background-size: cover;
 }
 
 #floor {
