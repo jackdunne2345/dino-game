@@ -48,6 +48,7 @@ const game_Over_Screen=()=>{
 
 const calculate_Obstacle_Position = (obstacleIndex,obstacles) => {
     let obstacleRightPos = Array(Array.from(obstacles).length).fill(0)
+    console.log(obstacleRightPos)
     let position;
     let isUnique;
     do {
@@ -59,21 +60,17 @@ const calculate_Obstacle_Position = (obstacleIndex,obstacles) => {
 
 const move_Obstacles = (obstacles) => {
     let isColliding = false
-    console.log(`distance between obstacles: ${Math.abs(obstacleRightPos[0] - obstacleRightPos[1])}`)
     Array.from(obstacles).forEach((obstacle, idx) => {
-        obstacleRightPos[idx] = parseFloat(obstacle.style.right)     
-        if (isNaN(obstacleRightPos[idx])) {
-            obstacleRightPos[idx] = calculate_Obstacle_Position(idx,obstacles);
+        let position= parseFloat(obstacle.style.right)     
+        if (isNaN(position)) {
+            obstacle.style.right=`${calculate_Obstacle_Position(idx,obstacles)}%` ;
         }
-        if (obstacleRightPos[idx] > 105) obstacle.style.right = `${calculate_Obstacle_Position(idx,obstacles)}%`
-        else obstacle.style.right = `${obstacleRightPos[idx] + 0.5}%`
+        if (position > 105) obstacle.style.right = `${calculate_Obstacle_Position(idx,obstacles)}%`
+        else obstacle.style.right = `${position + 0.5}%`
         if (collision(player,obstacle)) {
             isColliding = true
-        } else if (isJumping && !hasJumped) {
-            let elementRect = player.getBoundingClientRect()
-            let obstacleRect = obstacle.getBoundingClientRect()
-            if (elementRect.right > obstacleRect.left && !collision(obstacle)) hasJumped = true
-        }
+            console.log("collision")
+        } 
     });
     return isColliding
 }
