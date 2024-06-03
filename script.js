@@ -41,9 +41,9 @@ const jump=(event,player)=>{
         }, { once: true })
     }
 }
-
+//need to write this function
 const game_Over_Screen=()=>{
-
+    
 }
 
 const calculate_Obstacle_Position = (obstacleIndex,obstacles) => {
@@ -86,6 +86,7 @@ const game = () => {
     const startButton = document.getElementById('start');
     const gameContainer=document.getElementById('game')
     const hole=document.getElementById('hole')
+    const holeContainer=document.getElementById('hole-container')
     const player = document.getElementById('player')
     const score = document.getElementById('score')
     const topScoreElement = document.getElementById('top-score')
@@ -96,7 +97,7 @@ const game = () => {
     startButton.addEventListener('click', () => {
         startGame = true
         startTime = Date.now()
-        startGame && (menu.style.display = 'none') && (gameContainer.style.visibility = 'visible') && animate()
+        startGame && (menu.style.display = 'none') && (gameContainer.style.visibility = 'visible') && (holeContainer.style.visibility = 'visible') && animate()
     })
 
 
@@ -107,6 +108,31 @@ const game = () => {
             obstacle.style.right = `${randNumber(-200, -5)-10}%`
         })
     }
+
+    const game_Over=()=>{
+        holeContainer.style.visibility='visible'
+        hole.classList.add('shrink')
+        player.classList.add('dead')
+        jumpAudio.pause()
+        deadAudio.play()
+        hole.addEventListener('animationend', () => {
+            hole.classList.remove('shrink')
+            player.classList.remove('dead')
+            player.classList.add('walk')
+            
+            gameContainer.style.visibility = 'hidden'
+            if(topScore < currentScore){
+                topScore = currentScore
+                localStorage.setItem('topScore', currentScore)
+                topScoreElement.textContent=`Top score: ${topScore}`
+            }
+            console.log('Collision detected. Game Over.')
+            reset_Game_State();
+            startGame = false
+            menu.style.display='flex'
+
+        }, { once: true })
+    }
  
     const animate = () => {
         currentScore = Date.now() - startTime + extraPoints;
@@ -114,27 +140,7 @@ const game = () => {
             score.textContent = `Score: ${currentScore}`
             requestAnimationFrame(animate)
         } else {
-            hole.classList.add('shrink')
-            player.classList.add('dead')
-            jumpAudio.pause()
-            deadAudio.play()
-            hole.addEventListener('animationend', () => {
-                hole.classList.remove('shrink')
-                player.classList.remove('dead')
-                player.classList.add('walk')
-                menu.style.display='flex'
-                gameContainer.style.visibility = 'hidden'
-                if(topScore < currentScore){
-                    topScore = currentScore
-                    localStorage.setItem('topScore', currentScore)
-                    topScoreElement.textContent=`Top score: ${topScore}`
-                }
-               
-                console.log('Collision detected. Game Over.')
-                reset_Game_State();
-                startGame = false
-            }, { once: true })
-          
+            game_Over();
         }
     };
 
