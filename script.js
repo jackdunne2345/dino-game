@@ -1,12 +1,10 @@
 
-let isJumping = false;              
-let hasJumped = false;
 
 const randNumber = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-const set_Top_Score=()=>{
+const set_Top_Score=(score)=>{
     let topScore=0;
     const storedTopScore=localStorage.getItem('topScore')
     if (storedTopScore === null) {
@@ -14,7 +12,9 @@ const set_Top_Score=()=>{
     } else {
         topScore = Number(storedTopScore)
     }
-    return topScore
+
+  
+     return topScore
 }
 
 const collision = (element,element2) => {
@@ -33,7 +33,6 @@ const jump=(event,player)=>{
     if (event.code === 'Space') {
         player.classList.remove('walk')
         player.classList.add('jump')
-        isJumping = true
         jumpAudio.play();
         player.addEventListener('animationend', () => {
             player.classList.remove('jump')
@@ -41,14 +40,9 @@ const jump=(event,player)=>{
         }, { once: true })
     }
 }
-//need to write this function
-const game_Over_Screen=()=>{
-    
-}
 
 const calculate_Obstacle_Position = (obstacleIndex,obstacles) => {
     let obstacleRightPos = Array(Array.from(obstacles).length).fill(0)
-    console.log(obstacleRightPos)
     let position;
     let isUnique;
     do {
@@ -69,7 +63,6 @@ const move_Obstacles = (obstacles) => {
         else obstacle.style.right = `${position + 0.5}%`
         if (collision(player,obstacle)) {
             isColliding = true
-            console.log("collision")
         } 
     });
     return isColliding
@@ -89,18 +82,13 @@ const game = () => {
     const holeContainer=document.getElementById('hole-container')
     const player = document.getElementById('player')
     const score = document.getElementById('score')
-    const topScoreElement = document.getElementById('top-score')
+    const topScoreElement = document.getElementsByClassName('top-score')
+    Array.from(topScoreElement).forEach((element)=>{
+        element.textContent=`Top score: ${topScore}`
+    })
     const obstacles = document.getElementsByClassName('obstacle')
     const deadAudio=document.getElementById("deadAudio")
-    topScoreElement.textContent = `Top score: ${topScore}`
-   
-    startButton.addEventListener('click', () => {
-        startGame = true
-        startTime = Date.now()
-        startGame && (menu.style.display = 'none') && (gameContainer.style.visibility = 'visible') && (holeContainer.style.visibility = 'visible') && animate()
-    })
-
-
+    
     const reset_Game_State = () => {
         currentScore = 0;
         extraPoints = 0;
@@ -119,15 +107,16 @@ const game = () => {
             hole.classList.remove('shrink')
             player.classList.remove('dead')
             player.classList.add('walk')
-            
             gameContainer.style.visibility = 'hidden'
             if(topScore < currentScore){
                 topScore = currentScore
                 localStorage.setItem('topScore', currentScore)
                 topScoreElement.textContent=`Top score: ${topScore}`
             }
-            console.log('Collision detected. Game Over.')
             reset_Game_State();
+            Array.from(topScoreElement).forEach((element)=>{
+                element.textContent=`Top score: ${topScore}`
+            })
             startGame = false
             menu.style.display='flex'
 
@@ -138,12 +127,18 @@ const game = () => {
         currentScore = Date.now() - startTime + extraPoints;
         if (!move_Obstacles(obstacles) && startGame) {
             score.textContent = `Score: ${currentScore}`
+            
             requestAnimationFrame(animate)
         } else {
             game_Over();
         }
     };
 
+    startButton.addEventListener('click', () => {
+        startGame = true
+        startTime = Date.now()
+        startGame && (menu.style.display = 'none') && (gameContainer.style.visibility = 'visible') && (holeContainer.style.visibility = 'visible') && animate()
+    })
 }
 
-game()
+document.addEventListener("DOMContentLoaded",game())

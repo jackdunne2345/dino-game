@@ -11,12 +11,18 @@
 }
 button{
     width: 80%;
-    height: 20%;
+    height: 10%;
+    background-color:aliceblue ;
+    
+}
+button:hover{
+    background-color:rgb(204, 210, 215) ;
 }
 
 #game-title{
-    color: green;
-    text-shadow: 10px 10px 10px black;
+    color: black;
+    text-shadow: 10px 10px 10px rgb(54, 53, 53);
+    font-size: 200%;
 }
 
 body {
@@ -207,7 +213,7 @@ body {
     padding-right: 1rem;
 }
 
-#top-score {
+.top-score {
     padding-right: 1.25rem;
 }
 
